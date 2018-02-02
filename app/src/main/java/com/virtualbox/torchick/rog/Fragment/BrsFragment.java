@@ -11,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -222,7 +223,13 @@ public class BrsFragment extends Fragment {
 //                publikasiList.clear();
 
                 // add all the messages
-                publikasiList.addAll(response.body());
+                try{
+                    publikasiList.addAll(response.body());
+
+                }catch (Exception ex){
+                    Log.d("Error", ex.getMessage());
+
+                }
 
                 publikasiAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);

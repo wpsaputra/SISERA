@@ -174,7 +174,11 @@ public class InfografisFragment extends Fragment {
                 images.clear();
 
                 // add all the messages
-                images.addAll(response.body());
+                try{
+                    images.addAll(response.body());
+                }catch (Exception ex){
+                    Log.d("Error", ex.getMessage());
+                }
 
                 mAdapter.notifyDataSetChanged();
                 frameLayout.setVisibility(View.GONE);
