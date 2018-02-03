@@ -14,7 +14,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 //    public static final String BASE_URL = "https://kendarikota.bps.go.id";
-    public static final String BASE_URL = "http://sultra.bps.go.id";
+//    public static final String BASE_URL = "http://sultra.bps.go.id";
+    public static final String BASE_URL = "https://webapi.bps.go.id";
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {

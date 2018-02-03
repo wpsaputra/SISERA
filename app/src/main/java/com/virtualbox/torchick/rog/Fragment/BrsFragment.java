@@ -2,8 +2,10 @@ package com.virtualbox.torchick.rog.Fragment;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,8 +21,12 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.virtualbox.torchick.rog.Adapter.PublikasiAdapter;
 import com.virtualbox.torchick.rog.Model.Publikasi;
+import com.virtualbox.torchick.rog.Model.PublikasiWebApi;
 import com.virtualbox.torchick.rog.Network.ApiClient;
 import com.virtualbox.torchick.rog.Network.ApiInterface;
 import com.virtualbox.torchick.rog.R;
@@ -121,39 +127,38 @@ public class BrsFragment extends Fragment {
 //        swipeRefreshLayout.post(new Runnable() {
 //            @Override
 //            public void run() {
-//                getPublikasi();
+//                getPublikasiOffset();
 //            }
 //        });
 //        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 //            @Override
 //            public void onRefresh() {
-//                getPublikasi();
+//                getPublikasiOffset();
 //            }
 //        });
 //        noInternetButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-//                getPublikasi();
+//                getPublikasiOffset();
 //            }
 //        });
-
 
         swipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                getPublikasiOffset();
+                getPublikasiWebApi();
             }
         });
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getPublikasiOffset();
+                getPublikasiWebApi();
             }
         });
         noInternetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getPublikasiOffset();
+                getPublikasiWebApi();
             }
         });
 
@@ -167,7 +172,8 @@ public class BrsFragment extends Fragment {
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     //End of list
 //                    constraintLayoutLoading.setVisibility(View.VISIBLE);
-                    getPublikasiOffset();
+//                    getPublikasiOffset();
+                    getPublikasiWebApi();
                 }
 
             }
@@ -317,5 +323,74 @@ public class BrsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void getPublikasiWebApi(){
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        int page = 0;
+
+        if(publikasiList.size()==0){
+            page = 1;
+        }else{
+            page = publikasiList.size()/10 + 1;
+        }
+
+//        Call<JsonObject> call = apiService.getPublikasiWebApi("publication", "7400", "1", "1f5ea27aa195656fa79ee36110bda985");
+        Call<JsonObject> call = apiService.getPublikasiWebApi("publication", "7400", String.valueOf(page), "1f5ea27aa195656fa79ee36110bda985");
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject>call, Response<JsonObject> response) {
+                JsonObject movies = response.body();
+
+//                publikasiList.clear();
+
+                try{
+                    Gson gson = new Gson();
+                    String json = movies.get("data").getAsJsonArray().get(1).toString();
+                    List<PublikasiWebApi> list = gson.fromJson(json, new TypeToken<List<PublikasiWebApi>>(){}.getType());
+
+                    Log.d("Isi LIST", "size: " + String.valueOf(list.size()));
+                    Log.d("content LIST", "size: " + String.valueOf(list.get(0).getTitle()));
+
+                    for(int i=0; i<list.size(); i++){
+                        PublikasiWebApi publikasiWebApi = list.get(i);
+
+                        Publikasi publikasi = new Publikasi();
+//                        Hit for id karena id terlanjur tipe integer
+                        publikasi.setHit(publikasiWebApi.getPub_id());
+                        publikasi.setJudul_ind(publikasiWebApi.getTitle());
+                        publikasi.setNo_publikasi(publikasiWebApi.getIssn());
+                        publikasi.setTgl_rilis(publikasiWebApi.getRl_date());
+                        publikasi.setFile_cover(publikasiWebApi.getCover());
+                        publikasi.setFile_pdf(publikasiWebApi.getPdf());
+
+                        publikasiList.add(publikasi);
+                    }
+
+                }catch(Exception ex){
+                    Log.d("Error", ex.getMessage());
+                }
+
+
+
+                publikasiAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+                frameLayout.setVisibility(View.GONE);
+                constraintLayoutLoading.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject>call, Throwable t) {
+                // Log error here since request failed
+                Log.e("GAGAL", t.toString());
+                frameLayout.setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setRefreshing(false);
+                constraintLayoutLoading.setVisibility(View.GONE);
+            }
+        });
+
     }
 }

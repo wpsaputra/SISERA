@@ -22,8 +22,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.virtualbox.torchick.rog.Model.Publikasi;
+import com.virtualbox.torchick.rog.Model.PublikasiWebApi;
+import com.virtualbox.torchick.rog.Network.ApiClient;
+import com.virtualbox.torchick.rog.Network.ApiInterface;
 import com.virtualbox.torchick.rog.R;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PublikasiActivity extends AppCompatActivity {
     TextView detail_judul, detail_publikasi, detail_abstrak;
@@ -44,13 +56,17 @@ public class PublikasiActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         p = i.getParcelableExtra("publikasi");
+//        changeJson();
 
         detail_judul.setText(p.getJudul_ind());
         detail_publikasi.setText(p.getNo_publikasi());
-        detail_abstrak.setText(stripHtml(p.getAbstrak_ind()));
+//        detail_abstrak.setText(stripHtml(p.getAbstrak_ind()));
+//        detail_abstrak.setText(json);
+        getAbstrak(p);
 
         if (!TextUtils.isEmpty(p.getFile_cover())) {
-            Glide.with(this).load("https://sultra.bps.go.id/website/cover_publikasi/"+p.getFile_cover())
+//            Glide.with(this).load("https://sultra.bps.go.id/website/cover_publikasi/"+p.getFile_cover())
+            Glide.with(this).load(p.getFile_cover())
                     .placeholder(R.drawable.not_available)
                     .centerCrop()
                     .crossFade()
@@ -59,12 +75,20 @@ public class PublikasiActivity extends AppCompatActivity {
             detail_cover.setColorFilter(null);
         }
 
+//        downloadButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(haveStoragePermission()){
+//                    downloadPdf();
+//                };
+//            }
+//        });
+
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(haveStoragePermission()){
-                    downloadPdf();
-                };
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(p.getFile_pdf()));
+                startActivity(browserIntent);
             }
         });
     }
@@ -121,5 +145,35 @@ public class PublikasiActivity extends AppCompatActivity {
         }
     }
 
+    private void getAbstrak(Publikasi p){
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<JsonObject> call = apiService.getPublikasiWebApiDetail(p.getHit());
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject>call, Response<JsonObject> response) {
+                JsonObject movies = response.body();
+                try{
+                    Gson gson = new Gson();
+                    String json = movies.get("data").getAsJsonObject().get("abstract").toString();
+                    Log.d("PUBLIKASI", json);
+                    detail_abstrak.setText(json);
+
+                }catch(Exception ex){
+                    Log.d("Error", ex.getMessage());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject>call, Throwable t) {
+                // Log error here since request failed
+                Log.e("GAGAL", t.toString());
+            }
+        });
+
+
+    }
 
 }

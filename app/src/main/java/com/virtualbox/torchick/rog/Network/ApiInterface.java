@@ -1,5 +1,6 @@
 package com.virtualbox.torchick.rog.Network;
 
+import com.google.gson.JsonObject;
 import com.virtualbox.torchick.rog.Model.Image;
 import com.virtualbox.torchick.rog.Model.LinkDataForm;
 import com.virtualbox.torchick.rog.Model.Publikasi;
@@ -41,6 +42,15 @@ public interface ApiInterface {
 
     @GET("/project/SISERA_2/data/detailxy")
     Call<List<LinkDataForm>> getLinkDataFormSearch(@Query("id") String id);
+
+
+//    Publikasi web 3.0
+    @GET("/v1/api/list/index.php")
+    Call<JsonObject> getPublikasiWebApi(@Query("model") String model, @Query("domain") String domain, @Query("page") String page, @Query("key") String apiKey);
+
+    @GET("/v1/api/view/index.php?model=publication&domain=7400&id=1&lang=ind&key=1f5ea27aa195656fa79ee36110bda985")
+    Call<JsonObject> getPublikasiWebApiDetail(@Query("id") String pub_id);
+
 
 
 }

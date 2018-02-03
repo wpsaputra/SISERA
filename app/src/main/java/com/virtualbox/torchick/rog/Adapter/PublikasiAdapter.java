@@ -105,7 +105,8 @@ public class PublikasiAdapter extends RecyclerView.Adapter<PublikasiAdapter.MyVi
     private void applyCoverPicture(MyViewHolder holder, Publikasi publikasi) {
 
         if (!TextUtils.isEmpty(publikasi.getFile_cover())) {
-            Glide.with(mContext).load("https://sultra.bps.go.id/website/cover_publikasi/"+publikasi.getFile_cover())
+//            Glide.with(mContext).load("https://sultra.bps.go.id/website/cover_publikasi/"+publikasi.getFile_cover())
+            Glide.with(mContext).load(publikasi.getFile_cover())
                     .placeholder(R.drawable.not_available)
                     .centerCrop()
                     .crossFade()

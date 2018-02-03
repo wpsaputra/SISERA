@@ -251,8 +251,12 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(i);
                 }
 
-                if(mViewPager.getCurrentItem()==1){
-                    brsFragment.getPublikasiSearch(s);
+//                if(mViewPager.getCurrentItem()==1){
+//                    brsFragment.getPublikasiSearch(s);
+//                }
+
+                if(mViewPager.getCurrentItem()==1||mViewPager.getCurrentItem()==2){
+                    Toast.makeText(getApplicationContext(), "API Search tidak didukung untuk publikasi atau infografis", Toast.LENGTH_SHORT).show();
                 }
 
                 if(mViewPager.getCurrentItem()==3){
