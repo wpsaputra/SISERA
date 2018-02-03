@@ -17,6 +17,7 @@ import retrofit2.http.Url;
 
 public interface ApiInterface {
     //Publikasi
+//    https://webapi.bps.go.id/v1/api/domain/?type=kabbyprov&prov=7400&key=1f5ea27aa195656fa79ee36110bda985
     @GET("/trickster/index.php")
     Call<List<Publikasi>> getPublikasi(@Query("r") String address);
 
