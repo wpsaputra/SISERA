@@ -18,6 +18,7 @@ import retrofit2.http.Url;
 public interface ApiInterface {
     //Publikasi
 //    https://webapi.bps.go.id/v1/api/domain/?type=kabbyprov&prov=7400&key=1f5ea27aa195656fa79ee36110bda985
+//    https://webapi.bps.go.id/v1/api/list/?model=publication&domain=7400&key=1f5ea27aa195656fa79ee36110bda985&page=3
     @GET("/trickster/index.php")
     Call<List<Publikasi>> getPublikasi(@Query("r") String address);
 
@@ -30,7 +31,8 @@ public interface ApiInterface {
 
 
     //Infografis
-    @GET("/sisera/sisera.json")
+//    @GET("/sisera/sisera.json")
+    @GET("/project/backup_sisera_lama/sisera/sisera.json")
     Call<List<Image>> getImages(@Query("r") String address);
 
     //Link Sultradata

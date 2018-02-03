@@ -97,13 +97,23 @@
                 app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/ic_location_on_map" />
 
+            <!--<TextView-->
+                <!--android:id="@+id/link_id"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:text="91"-->
+                <!--android:visibility="gone"-->
+                <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
             <TextView
                 android:id="@+id/link_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
-                android:text="91"
+                android:text="23"
                 android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
