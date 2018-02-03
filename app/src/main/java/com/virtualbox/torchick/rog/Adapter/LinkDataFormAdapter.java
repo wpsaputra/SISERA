@@ -3,6 +3,7 @@ package com.virtualbox.torchick.rog.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -110,6 +111,7 @@ public class LinkDataFormAdapter extends RecyclerView.Adapter<LinkDataFormAdapte
         if(icon!=null&&circle!=null){
             holder.cover_img.setImageBitmap(circle);
             holder.icon_img.setImageBitmap(icon);
+            holder.icon_img.setColorFilter(Color.TRANSPARENT);
         }
 
 
